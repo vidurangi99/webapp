@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electric Kettle Digital Product Passport</title>
+  <style>
+    :root {
+      --primary: #3498db;
+      --secondary: #2ecc71;
+      --warning: #e74c3c;
+      --light-bg: #f9f9f9;
+      --card-bg: #fff;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-bg);
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
+    }
+    .section {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    h2 {
+      color: var(--primary);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .label {
+      font-weight: 600;
+      color: #555;
+      min-width: 160px;
+      display: inline-block;
+    }
+    select, button, input {
+      padding: 0.75rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .status-box {
+      background-color: #eef6ff;
+      padding: 1.5rem;
+      border-left: 5px solid var(--primary);
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .progress-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 20px;
+      margin: 1rem 0;
+      position: relative;
+    }
+    .progress-bar {
+      height: 20px;
+      border-radius: 20px;
+      background-color: var(--secondary);
+      width: 25%;
+      transition: width 0.5s;
+    }
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #333;
+      font-weight: bold;
+    }
+    .lifetime-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .critical {
+      color: var(--warning);
+      font-weight: bold;
+    }
+    .icon {
+      font-size: 1.2rem;
+    }
+    .date-input {
+      display: flex;
+      gap: 1rem;
+    }
+    .date-input input {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="section">
+      <h2><span class="icon">📦</span> Product Information</h2>
+      <div class="date-input">
+        <div style="flex: 1;">
+          <label for="purchaseDate" class="label">Purchase Date:</label>
+          <input type="date" id="purchaseDate" onchange="updateAgeAndProgress()" value="2021-01-15">
+        </div>
+        <div style="flex: 1;">
+          <label class="label">Current Date:</label>
+          <input type="date" id="currentDate" onchange="updateAgeAndProgress()">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><span class="icon">⏳</span> Lifetime Analysis</h2>
+      <div class="status-box">
+        <p><span class="label">Current Age:</span> <span id="currentAge">3.2</span> years</p>
+        <p><span class="label">Expected Lifespan:</span> <span id="expectedLifetime">4.0</span> years</p>
+        <p><span class="label">Remaining Lifetime:</span> <span id="remainingLifetime">0.8</span> years</p>
+        
+        <div class="progress-container">
+          <div class="progress-bar" id="lifetimeBar"></div>
+          <div class="progress-text" id="progressText">25% Used</div>
+        </div>
+        <div class="lifetime-indicator">
+          <span>Purchase Date</span>
+          <span id="endOfLifeDate">Jan 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><span class="icon">🔧</span> Maintenance</h2>
+      <label for="repairType" class="label">Select Repair Type:</label>
+      <select id="repairType" onchange="updateLifetime()">
+        <option value="">-- Select Repair Type --</option>
+        <option value="Heating Element">Heating Element Replacement</option>
+        <option value="Thermostat">Thermostat Replacement</option>
+        <option value="Power Cord">Power Cord Replacement</option>
+        <option value="Electrical Contacts">Electrical Contacts</option>
+        <option value="Thermal Fuse">Thermal Fuse</option>
+        <option value="Temperature Control">Temperature Control</option>
+        <option value="Power Switch">Power Switch</option>
+      </select>
+      
+      <div id="repairResult" style="margin-top: 1rem; display: none;">
+        <p><span class="label">New Expected Lifespan:</span> <span id="newLifetime">—</span></p>
+        <p><span class="label">New Remaining Lifetime:</span> <span id="newRemaining">—</span></p>
+        <button onclick="applyRepair()" style="margin-top: 1rem;">Apply This Repair</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Component lifespan data (in years)
+    const componentLifespans = {
+      "Heating Element": 4.0,
+      "Thermostat": 4.4,
+      "Power Cord": 4.5,
+      "Electrical Contacts": 4.7,
+      "Thermal Fuse": 5.5,
+      "Temperature Control": 6.0,
+      "Power Switch": 5.0
+    };
+
+    // Initialize with default values
+    let currentLifetime = 4.0; // Default base lifespan
+    let currentAge = 3.2; // Will be calculated from dates
+    
+    // Set current date to today by default
+    document.getElementById('currentDate').valueAsDate = new Date();
+    
+    // Main calculation function
+    function updateAgeAndProgress() {
+      const purchaseDate = new Date(document.getElementById("purchaseDate").value);
+      const currentDate = new Date(document.getElementById("currentDate").value);
+      
+      // Calculate age in years with decimals
+      const ageInYears = (currentDate - purchaseDate) / (1000 * 60 * 60 * 24 * 365.25);
+      currentAge = parseFloat(ageInYears.toFixed(2));
+      
+      // Update display
+      document.getElementById("currentAge").textContent = currentAge;
+      
+      // Calculate remaining lifetime
+      const remaining = currentLifetime - currentAge;
+      document.getElementById("remainingLifetime").textContent = remaining > 0 ? 
+        remaining.toFixed(1) : "0";
+      
+      // Update progress bar
+      updateProgressBar();
+      
+      // Update end of life date
+      updateEndOfLifeDate(purchaseDate);
+    }
+    
+    function updateProgressBar() {
+      const progressBar = document.getElementById("lifetimeBar");
+      const progressText = document.getElementById("progressText");
+      
+      // Calculate percentage
+      let percentage = (currentAge / currentLifetime) * 100;
+      percentage = Math.min(100, Math.max(0, percentage)); // Clamp between 0-100
+      
+      // Update progress bar width
+      progressBar.style.width = percentage + "%";
+      
+      // Change color if over 80%
+      if (percentage > 80) {
+        progressBar.style.backgroundColor = "var(--warning)";
+        progressText.textContent = "Critical: " + percentage.toFixed(0) + "% Used";
+      } else {
+        progressBar.style.backgroundColor = "var(--secondary)";
+        progressText.textContent = percentage.toFixed(0) + "% Used";
+      }
+    }
+    
+    function updateEndOfLifeDate(purchaseDate) {
+      const endDate = new Date(purchaseDate);
+      endDate.setFullYear(endDate.getFullYear() + Math.floor(currentLifetime));
+      
+      const options = { year: 'numeric', month: 'short' };
+      document.getElementById("endOfLifeDate").textContent = endDate.toLocaleDateString('en-US', options);
+    }
+    
+    function updateLifetime() {
+      const repairType = document.getElementById("repairType").value;
+      const repairResult = document.getElementById("repairResult");
+      
+      if (componentLifespans[repairType]) {
+        const newLifetime = componentLifespans[repairType];
+        const newRemaining = newLifetime - currentAge;
+        
+        document.getElementById("newLifetime").textContent = newLifetime.toFixed(1) + " years";
+        document.getElementById("newRemaining").textContent = newRemaining > 0 ? 
+          newRemaining.toFixed(1) + " years" : "Expired";
+        
+        repairResult.style.display = "block";
+      } else {
+        repairResult.style.display = "none";
+      }
+    }
+    
+    function applyRepair() {
+      const repairType = document.getElementById("repairType").value;
+      if (!repairType) return;
+      
+      // Update the current lifetime
+      currentLifetime = componentLifespans[repairType];
+      document.getElementById("expectedLifetime").textContent = currentLifetime.toFixed(1);
+      
+      // Recalculate everything
+      updateAgeAndProgress();
+      
+      // Reset selection
+      document.getElementById("repairType").value = "";
+      document.getElementById("repairResult").style.display = "none";
+      
+      alert("Repair applied successfully! Lifetime updated.");
+    }
+    
+    // Initialize on load
+    updateAgeAndProgress();
+  </script>
+</body>
+</html>
