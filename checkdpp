@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electric Kettle Maintenance Guide</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    
+    header {
+      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .content {
+      display: flex;
+      padding: 0;
+    }
+    
+    .input-section {
+      background: #f8f9ff;
+      padding: 30px;
+      width: 40%;
+      border-right: 1px solid #e0e7ff;
+    }
+    
+    .visualization-section {
+      padding: 30px;
+      width: 60%;
+      background: white;
+    }
+    
+    .card {
+      margin-bottom: 25px;
+    }
+    
+    .card h2 {
+      color: #2c5364;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e0e7ff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .card h2 i {
+      background: #2c5364;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #444;
+    }
+    
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: white;
+    }
+    
+    .input-group input:focus,
+    .input-group select:focus {
+      border-color: #2c5364;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44, 83, 100, 0.2);
+    }
+    
+    .btn {
+      background: linear-gradient(90deg, #0f2027, #203a43);
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .btn:hover {
+      background: linear-gradient(90deg, #203a43, #0f2027);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn i {
+      margin-right: 10px;
+    }
+    
+    .results {
+      background: #f0f4ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 25px;
+    }
+    
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed #d0d8ff;
+    }
+    
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .timeline-container {
+      margin-top: 25px;
+    }
+    
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .timeline-scale {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 10px;
+      background: #f8f9ff;
+      padding: 8px;
+      border-radius: 8px;
+    }
+    
+    .timeline-bar-container {
+      height: 50px;
+      background: #e0e7ff;
+      border-radius: 25px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .lifetime-bar {
+      position: absolute;
+      height: 100%;
+      transition: all 0.5s ease;
+    }
+    
+    .base-lifetime {
+      background: #4CAF50;
+      width: 57.14%; /* 4/7 */
+      z-index: 1;
+      border-radius: 25px 0 0 25px; /* Only round left side */
+    }
+    
+    .extended-lifetime {
+      background: #FFC107;
+      left: 57.14%;
+      z-index: 2;
+      width: 0%;
+      border-radius: 0 25px 25px 0; /* Only round right side */
+    }
+    
+    .current-age-marker {
+      position: absolute;
+      top: -10px;
+      width: 4px;
+      height: 70px;
+      background: #E91E63;
+      z-index: 3;
+    }
+    
+    .marker-label {
+      position: absolute;
+      top: -30px;
+      transform: translateX(-50%);
+      font-weight: 600;
+      color: #E91E63;
+      white-space: nowrap;
+      background: white;
+      padding: 3px 8px;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      font-size: 0.9rem;
+    }
+    
+    .legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8f9ff;
+      padding: 8px 15px;
+      border-radius: 20px;
+    }
+    
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+    
+    .extension-info {
+      background: #fff8e1;
+      border-left: 4px solid #FFC107;
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+    
+    .extension-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #FF8F00;
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    .maintenance-guide {
+      margin-top: 30px;
+      background: #f8f9ff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    
+    .guide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e7ff;
+    }
+    
+    .guide-header h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2c5364;
+    }
+    
+    .notification-badge {
+      background: #E91E63;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .guide-item {
+      display: flex;
+      margin-bottom: 15px;
+      padding: 12px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .guide-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .item-icon {
+      background: #2c5364;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    
+    .item-content {
+      flex: 1;
+    }
+    
+    .item-title {
+      font-weight: 600;
+      color: #2c5364;
+      margin-bottom: 5px;
+    }
+    
+    .item-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .item-date {
+      font-weight: 600;
+      color: #E91E63;
+    }
+    
+    .notification-popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      padding: 20px;
+      width: 320px;
+      z-index: 1000;
+      transform: translateX(120%);
+      transition: transform 0.5s ease;
+      border-left: 5px solid #4CAF50;
+    }
+    
+    .notification-popup.show {
+      transform: translateX(0);
+    }
+    
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .notification-header h4 {
+      color: #2c5364;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .close-notification {
+      background: #f0f0f0;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .notification-body {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    
+    .notification-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .notification-btn {
+      background: #2c5364;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    
+    .notification-btn:hover {
+      background: #203a43;
+    }
+    
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+      }
+      
+      .input-section, .visualization-section {
+        width: 100%;
+      }
+      
+      .input-section {
+        border-right: none;
+        border-bottom: 1px solid #e0e7ff;
+      }
+      
+      .timeline-scale span {
+        font-size: 0.8rem;
+      }
+      
+      .notification-popup {
+        width: calc(100% - 40px);
+        top: 10px;
+        right: 10px;
+      }
+    }
+    
+    .download-section {
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px;
+      background: #e0e7ff;
+      border-radius: 10px;
+    }
+    
+    .download-btn {
+      background: linear-gradient(90deg, #0f2027, #203a43);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .download-btn:hover {
+      background: linear-gradient(90deg, #203a43, #0f2027);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-temperature-high"></i> Electric Kettle Maintenance Guide</h1>
+      <p>Optimize your kettle's longevity with precise maintenance planning</p>
+    </header>
+    
+    <div class="content">
+      <div class="input-section">
+        <div class="card">
+          <h2><i class="fas fa-calendar-alt"></i> Dates</h2>
+          
+          <div class="input-group">
+            <label for="purchase-date">Purchase Date</label>
+            <input type="date" id="purchase-date" value="2021-01-15">
+          </div>
+          
+          <div class="input-group">
+            <label for="current-date">Current Date</label>
+            <input type="date" id="current-date">
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2><i class="fas fa-tools"></i> Maintenance</h2>
+          
+          <div class="input-group">
+            <label for="repair-type">Select Repair</label>
+            <select id="repair-type">
+              <option value="">-- Select a repair --</option>
+              <option value="heating">Heating Element Replacement</option>
+              <option value="thermostat">Thermostat Replacement</option>
+              <option value="cord">Power Cord Replacement</option>
+              <option value="contacts">Electrical Contacts Replacement</option>
+              <option value="fuse">Thermal Fuse Replacement</option>
+              <option value="control">Temperature Control Replacement</option>
+            </select>
+          </div>
+          
+          <button class="btn" id="calculate-btn">
+            <i class="fas fa-calculator"></i> Calculate Lifespan
+          </button>
+        </div>
+        
+        <div class="results">
+          <div class="result-item">
+            <span><i class="fas fa-hourglass-half"></i> Current Age:</span>
+            <strong id="current-age">3.2 years</strong>
+          </div>
+          <div class="result-item">
+            <span><i class="fas fa-battery-full"></i> Base Lifespan:</span>
+            <strong id="base-lifetime">4.0 years</strong>
+          </div>
+          <div class="result-item">
+            <span><i class="fas fa-arrow-up"></i> Extended Lifespan:</span>
+            <strong id="extended-lifetime">-</strong>
+          </div>
+          <div class="result-item">
+            <span><i class="fas fa-plus-circle"></i> Lifetime Extension:</span>
+            <strong id="lifetime-extension">-</strong>
+          </div>
+        </div>
+        
+        <div class="download-section">
+          <p>Save your maintenance schedule</p>
+          <button class="download-btn" id="download-btn">
+            <i class="fas fa-download"></i> Download Report
+          </button>
+        </div>
+      </div>
+      
+      <div class="visualization-section">
+        <h2><i class="fas fa-chart-line"></i> Lifespan Visualization</h2>
+        
+        <div class="timeline-container">
+          <div class="timeline-header">
+            <h3>Kettle Lifespan Timeline</h3>
+            <p>Max Potential: <strong>7 years</strong></p>
+          </div>
+          
+          <div class="timeline-scale">
+            <span>0</span>
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+            <span>6</span>
+            <span>7 years</span>
+          </div>
+          
+          <div class="timeline-bar-container">
+            <div class="lifetime-bar base-lifetime" id="base-bar"></div>
+            <div class="lifetime-bar extended-lifetime" id="extended-bar"></div>
+            <div class="current-age-marker" id="age-marker"></div>
+          </div>
+          
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #4CAF50;"></div>
+              <span>Base Lifespan (4 yrs)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #FFC107;"></div>
+              <span>Extended Lifespan</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #E91E63;"></div>
+              <span>Current Age</span>
+            </div>
+          </div>
+          
+          <div class="extension-info">
+            <p><strong>Maintenance Impact:</strong> Replacing components extends the kettle's lifespan. The maximum achievable lifespan with all repairs is 7 years.</p>
+            <div class="extension-value">
+              <span id="extension-value">0.0 years</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="maintenance-guide">
+          <div class="guide-header">
+            <h3><i class="fas fa-clipboard-list"></i> Maintenance Schedule</h3>
+            <div class="notification-badge">2</div>
+          </div>
+          
+          <div class="guide-item" data-repair="heating">
+            <div class="item-icon">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Heating Element Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 4 years</span>
+                <span class="item-date" id="heating-date">Jan 15, 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-item" data-repair="thermostat">
+            <div class="item-icon">
+              <i class="fas fa-thermometer-half"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Thermostat Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 4.4 years</span>
+                <span class="item-date" id="thermostat-date">Mar 12, 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-item" data-repair="cord">
+            <div class="item-icon">
+              <i class="fas fa-plug"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Power Cord Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 4.5 years</span>
+                <span class="item-date" id="cord-date">Apr 1, 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-item" data-repair="contacts">
+            <div class="item-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Electrical Contacts Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 4.7 years</span>
+                <span class="item-date" id="contacts-date">May 15, 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-item" data-repair="fuse">
+            <div class="item-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Thermal Fuse Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 5 years</span>
+                <span class="item-date" id="fuse-date">Jun 20, 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-item" data-repair="control">
+            <div class="item-icon">
+              <i class="fas fa-sliders-h"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Temperature Control Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 5.5 years</span>
+                <span class="item-date" id="control-date">Aug 15, 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="guide-item" data-repair="body">
+            <div class="item-icon">
+              <i class="fas fa-box"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">Body/Lid/Handle Replacement</div>
+              <div class="item-details">
+                <span>Recommended at 6 years</span>
+                <span class="item-date" id="body-date">Jan 15, 2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification-popup" id="notification-popup">
+    <div class="notification-header">
+      <h4><i class="fas fa-bell"></i> Maintenance Reminder</h4>
+      <button class="close-notification" id="close-notification">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="notification-body">
+      <p>Your <strong id="repair-name">Heating Element</strong> replacement is recommended on <strong id="repair-date">Jan 15, 2025</strong>.</p>
+      <p>This maintenance will help extend your kettle's lifespan.</p>
+    </div>
+    <div class="notification-footer">
+      <button class="notification-btn" id="acknowledge-btn">Acknowledge</button>
+    </div>
+  </div>
+
+  <script>
+    // Component lifespan data (in years)
+    const componentLifespans = {
+      heating: 4.0,
+      thermostat: 4.4,
+      cord: 4.5,
+      contacts: 4.7,
+      fuse: 5.0,
+      control: 5.5,
+      body: 6.0
+    };
+    
+    // Next component after repair
+    const nextComponent = {
+      heating: "thermostat",
+      thermostat: "cord",
+      cord: "contacts",
+      contacts: "fuse",
+      fuse: "control",
+      control: "body",
+      body: null
+    };
+    
+    // Component names
+    const componentNames = {
+      heating: "Heating Element",
+      thermostat: "Thermostat",
+      cord: "Power Cord",
+      contacts: "Electrical Contacts",
+      fuse: "Thermal Fuse",
+      control: "Temperature Control",
+      body: "Body/Lid/Handle"
+    };
+    
+    // Set current date to today by default
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      document.getElementById('current-date').value = formattedDate;
+      
+      // Initialize calculations
+      calculateLifespan();
+      updateMaintenanceDates();
+      
+      // Add event listeners to guide items
+      document.querySelectorAll('.guide-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const repairType = this.getAttribute('data-repair');
+          showNotification(repairType);
+        });
+      });
+      
+      // Close notification
+      document.getElementById('close-notification').addEventListener('click', function() {
+        document.getElementById('notification-popup').classList.remove('show');
+      });
+      
+      // Acknowledge button
+      document.getElementById('acknowledge-btn').addEventListener('click', function() {
+        document.getElementById('notification-popup').classList.remove('show');
+      });
+      
+      // Download button
+      document.getElementById('download-btn').addEventListener('click', downloadReport);
+    });
+    
+    // Add event listeners
+    document.getElementById('calculate-btn').addEventListener('click', function() {
+      calculateLifespan();
+      updateMaintenanceDates();
+    });
+    
+    document.getElementById('purchase-date').addEventListener('change', function() {
+      calculateLifespan();
+      updateMaintenanceDates();
+    });
+    
+    document.getElementById('current-date').addEventListener('change', calculateLifespan);
+    document.getElementById('repair-type').addEventListener('change', calculateLifespan);
+    
+    function calculateLifespan() {
+      // Get input values
+      const purchaseDate = new Date(document.getElementById("purchase-date").value);
+      const currentDate = new Date(document.getElementById("current-date").value);
+      const repairType = document.getElementById("repair-type").value;
+      
+      // Calculate current age in years
+      const ageInYears = (currentDate - purchaseDate) / (1000 * 60 * 60 * 24 * 365.25);
+      const currentAge = parseFloat(ageInYears.toFixed(2));
+      
+      // Display current age
+      document.getElementById("current-age").textContent = currentAge.toFixed(1) + " years";
+      
+      // Calculate base lifetime
+      const baseLifetime = 4.0;
+      document.getElementById("base-lifetime").textContent = baseLifetime.toFixed(1) + " years";
+      
+      // Calculate extended lifetime based on repair
+      let extendedLifetime = baseLifetime;
+      let lifetimeExtension = 0;
+      
+      if (repairType) {
+        // Get the next component that would fail after this repair
+        const nextComp = nextComponent[repairType];
+        if (nextComp) {
+          extendedLifetime = componentLifespans[nextComp];
+          lifetimeExtension = extendedLifetime - baseLifetime;
+        } else {
+          // If no next component, use the current component's lifespan
+          extendedLifetime = componentLifespans[repairType];
+          lifetimeExtension = extendedLifetime - baseLifetime;
+        }
+      }
+      
+      // Display extended lifetime
+      document.getElementById("extended-lifetime").textContent = 
+        extendedLifetime > baseLifetime ? extendedLifetime.toFixed(1) + " years" : baseLifetime.toFixed(1) + " years";
+      document.getElementById("lifetime-extension").textContent = 
+        lifetimeExtension > 0 ? "+" + lifetimeExtension.toFixed(1) + " years" : "0 years";
+      
+      // Display extension value
+      document.getElementById("extension-value").textContent = 
+        lifetimeExtension > 0 ? "+" + lifetimeExtension.toFixed(1) + " years" : "0.0 years";
+      
+      // Update timeline visualization
+      updateTimeline(baseLifetime, extendedLifetime, currentAge);
+    }
+    
+    function updateTimeline(baseLifetime, extendedLifetime, currentAge) {
+      const maxLifetime = 7.0;
+      
+      // Calculate percentages
+      const basePercentage = (baseLifetime / maxLifetime) * 100;
+      const extendedPercentage = ((extendedLifetime - baseLifetime) / maxLifetime) * 100;
+      const currentAgePercentage = (currentAge / maxLifetime) * 100;
+      
+      // Update bars
+      document.getElementById("base-bar").style.width = basePercentage + "%";
+      document.getElementById("extended-bar").style.width = extendedPercentage + "%";
+      document.getElementById("extended-bar").style.left = basePercentage + "%";
+      
+      // Update current age marker
+      const ageMarker = document.getElementById("age-marker");
+      ageMarker.style.left = `calc(${currentAgePercentage}% - 2px)`;
+      
+      // Add label to marker
+      const markerLabel = document.createElement("div");
+      markerLabel.className = "marker-label";
+      markerLabel.textContent = currentAge.toFixed(1) + " yrs";
+      markerLabel.id = "marker-label";
+      
+      // Remove existing label if any
+      const existingLabel = document.getElementById("marker-label");
+      if (existingLabel) existingLabel.remove();
+      
+      ageMarker.appendChild(markerLabel);
+    }
+    
+    function updateMaintenanceDates() {
+      const purchaseDate = new Date(document.getElementById("purchase-date").value);
+      
+      // Update dates for each component
+      Object.keys(componentLifespans).forEach(component => {
+        const years = componentLifespans[component];
+        const date = new Date(purchaseDate);
+        date.setFullYear(date.getFullYear() + years);
+        
+        // Format date as "MMM dd, yyyy"
+        const formattedDate = date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        
+        document.getElementById(`${component}-date`).textContent = formattedDate;
+      });
+    }
+    
+    function showNotification(repairType) {
+      const repairName = componentNames[repairType];
+      const repairDate = document.getElementById(`${repairType}-date`).textContent;
+      
+      // Set notification content
+      document.getElementById('repair-name').textContent = repairName;
+      document.getElementById('repair-date').textContent = repairDate;
+      
+      // Show notification
+      document.getElementById('notification-popup').classList.add('show');
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        document.getElementById('notification-popup').classList.remove('show');
+      }, 5000);
+    }
+    
+    function downloadReport() {
+      const purchaseDate = document.getElementById("purchase-date").value;
+      const currentDate = document.getElementById("current-date").value;
+      const currentAge = document.getElementById("current-age").textContent;
+      const baseLifetime = document.getElementById("base-lifetime").textContent;
+      const extendedLifetime = document.getElementById("extended-lifetime").textContent;
+      const lifetimeExtension = document.getElementById("lifetime-extension").textContent;
+      
+      // Create report content
+      let reportContent = `Electric Kettle Maintenance Report\n`;
+      reportContent += `===================================\n\n`;
+      reportContent += `Purchase Date: ${purchaseDate}\n`;
+      reportContent += `Current Date: ${currentDate}\n`;
+      reportContent += `Current Age: ${currentAge}\n`;
+      reportContent += `Base Lifespan: ${baseLifetime}\n`;
+      reportContent += `Extended Lifespan: ${extendedLifetime}\n`;
+      reportContent += `Lifetime Extension: ${lifetimeExtension}\n\n`;
+      
+      reportContent += `Maintenance Schedule\n`;
+      reportContent += `====================\n\n`;
+      
+      // Add maintenance items
+      Object.keys(componentLifespans).forEach(component => {
+        const name = componentNames[component];
+        const date = document.getElementById(`${component}-date`).textContent;
+        reportContent += `- ${name}: ${date}\n`;
+      });
+      
+      // Create download link
+      const blob = new Blob([reportContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'kettle_maintenance_report.txt';
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+      
+      // Show confirmation notification
+      document.getElementById('repair-name').textContent = "Report";
+      document.getElementById('repair-date').textContent = "Downloaded";
+      document.getElementById('notification-body').innerHTML = 
+        '<p>Your maintenance report has been downloaded successfully!</p>';
+      document.getElementById('notification-popup').classList.add('show');
+      
+      setTimeout(() => {
+        document.getElementById('notification-popup').classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
